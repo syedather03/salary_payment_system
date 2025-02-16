@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        /* Page Background */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Glassmorphic Container */
+        .container {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(12px);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 800px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        h1 {
+            color: white;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        h2 {
+            color: white;
+            margin-top: 20px;
+            font-size: 20px;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        th {
+            background: rgba(0, 123, 255, 0.8);
+            color: white;
+        }
+
+        td {
+            color: #333;
+            font-weight: bold;
+        }
+
+        /* Buttons */
+        .button {
+            display: inline-block;
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            transition: 0.3s;
+            text-align: center;
+            margin: 5px;
+        }
+
+        .button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .button.delete {
+            background: linear-gradient(90deg, #ff4b2b, #ff416c);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            table, th, td {
+                font-size: 14px;
+            }
+            .button {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Employee Dashboard</h1>
+
+        <h2>Employees</h2>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Monthly Salary</th>
+                <th>Remaining Salary</th>
+                <th>Actions</th>
+            </tr>
+            {% for employee in employees %}
+            <tr>
+                <td>{{ employee.name }}</td>
+                <td>{{ employee.monthly_salary }}</td>
+                <td>
+                    {% if employee.salarypayment_set.exists %}
+                        {{ employee.salarypayment_set.last.remaining_salary }}
+                    {% else %}
+                        {{ employee.monthly_salary }}
+                    {% endif %}
+                </td>
+                <td>
+                    <a class="button" href="/api/pay/{{ employee.id }}/">Make Payment</a>
+                    <a class="button delete" href="/api/delete-employee/{{ employee.id }}/">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <br>
+        <a href="/api/add-employee/" class="button">➕ Add New Employee</a>
+    </div>
+
+</body>
+</html>
